@@ -9,7 +9,9 @@
 #include "PointSet.h"
 #include <iostream>
 #include <sstream>
+#include <string>
 
+static const int MINIMAL_POINTS_IN_HULL = 3;
 
 /* y-coordinate Point comparator. Points are compared by the y coordinate,
  * with ties broken by the x coordinate
@@ -23,6 +25,17 @@ bool yCoordinateComparator(const Point*& p1, const Point*& p2)
 	return p1 -> getY() < p2 -> getY();
 }
 
+/* x-coordinate Point comparator. Points are compared by the x coordinate,
+ * with ties broken by the y coordinate
+ */
+bool xCoordinateComparator(const Point*& p1, const Point*& p2)
+{
+	if(p1 -> getX() == p2 -> getX())
+	{
+		return p1 -> getY() < p2 -> getY();
+	}
+	return p1 -> getX() < p2 -> getX();
+}
 /*
  * Compares two points according to their polar angle in comparison to a pivot.
  * This is done by calculating the slope of the vector connecting each point to
@@ -32,20 +45,20 @@ bool yCoordinateComparator(const Point*& p1, const Point*& p2)
  * comparison to the pivot on the x axis: to the right of the pivot - always
  * smaller, to the left - always larger.
  */
-bool polarAngleComparator(const Point*& p1, const Point*& p2, const Point* pivot)
+bool polarAngleComparator(const Point*& p1, const Point*& p2, const Point& pivot)
 {
-	if(p1 -> getY() == pivot -> getY())
+	if(p1 -> getY() == pivot.getY())
 	{
-		return p1 -> getX() >= pivot -> getX();
+		return p1 -> getX() >= pivot.getX();
 	}
 	
-	if(p2 -> getY() == pivot -> getY())
+	if(p2 -> getY() == pivot.getY())
 	{
-		return !(p2 -> getX() >= pivot -> getX());
+		return !(p2 -> getX() >= pivot.getX());
 	}
 
-	double slope1 = (p1 -> getX() - pivot -> getX()) /(double) (p1 -> getY() - pivot -> getY());
-	double slope2 = (p2 -> getX() - pivot -> getX()) /(double) (p2 -> getY() - pivot -> getY());
+	double slope1 = (p1 -> getX() - pivot.getX()) /(double) (p1 -> getY() - pivot.getY());
+	double slope2 = (p2 -> getX() - pivot.getX()) /(double) (p2 -> getY() - pivot.getY());
 	return slope1 > slope2;
 }
 
@@ -70,16 +83,22 @@ int getTurnDirection(const Point* p1, const Point* p2, const Point* p3)
  */
 int grahmScanSort(PointSet& set)
 {
+	// No point in performing the algorithm for less than three points
+	if(set.size() < MINIMAL_POINTS_IN_HULL)
+	{
+		return set.size();
+	}
+	
 	cout << "entered grahm scan"<<endl;
 	int i = 1;
-	int hullSize = 0; // For index conveniance, the hull size is counted from
+	int hullSize = 0; // For index convenience, the hull size is counted from
 	                  // 0. The actual size will be returned incremented by 1.
 	
 	// Taking care of the point in index 1. Using the last point in the set as
 	// the predecessor to the first (pivot) point.
 	//TODO deal with same line
 	cout << "Before first point. Comparing " << set[set.size()-1] -> toString() << ", " << set[0] -> toString() << " and " << set[1] -> toString() <<". Result is "<< getTurnDirection(set[set.size() - 1], set[0], set[1]) << endl;
-	while(getTurnDirection(set[set.size() - 1], set[0], set[1]) < 0 and i < set.size())
+	while(getTurnDirection(set[set.size() - 1], set[0], set[1]) <= 0 and i < set.size())
 	{
 	cout << "In loop. Comparing " << set[set.size()-1] -> toString() << ", " << set[0] -> toString() << " and " << set[1] -> toString() <<". Result is "<< getTurnDirection(set[set.size() - 1], set[0], set[1]) << endl;
 		i++;
@@ -88,7 +107,7 @@ int grahmScanSort(PointSet& set)
 cout << "Done with loop. i is " << i <<". Hull size is " << hullSize << endl;
 	hullSize++;
 	set.swapSet(hullSize, i);
-	cout << "incremented hull size to " << hullSize<<" and swaped hull and i. " << endl;
+	cout << "incremented hull size to " << hullSize<<" and swapped hull and i. " << endl;
 	
 	cout << endl << "Starting main portion: "<<endl<<endl;
 
@@ -102,7 +121,7 @@ cout << "Done with loop. i is " << i <<". Hull size is " << hullSize << endl;
 	cout << "Inner loop. Comparing " << set[hullSize-1] -> toString() << ", " << set[hullSize] -> toString() << " and " << set[i] -> toString() <<". Result is "<< getTurnDirection(set[hullSize-1], set[hullSize], set[i])<<endl; 
 			if(i == set.size() -1) //on last point, no need to decrement.
 			{
-				cout << "got to last point. breaking out of function and returning " <<hullSize + 1 <<endl;
+				cout << "got to last point. Breaking out of function and returning " <<hullSize + 1 <<endl;
 				return ++hullSize;
 			}
 			hullSize--;
@@ -114,40 +133,48 @@ cout << "Done with loop. i is " << i <<". Hull size is " << hullSize << endl;
 		set.swapSet(hullSize, i);
 	}
 	
-	cout << "done with it all. Returning " <<hullSize+1 << endl;
+	cout << "done with it all. Returning " <<hullSize+1 << endl<<endl<<endl;
 	return ++hullSize;	
 }
 
 
 int main()
 {
-
+	/* Receiving input, creating corresponding Points, and adding them to the
+	 * set. Since the set creates a copy of the points, original points are
+	 * deleted */
 	string line, coordinateInput;
-	Point* point;
+	PointSet set;
+	Point* newPoint;
 	istringstream stream;
 	int x, y;
-	while(getline(cin, line)
-	{
+	while(getline(cin, line))
+	{	
 		stream.str(line);
-		getline(stream, coordinateInput, ','));
+		getline(stream, coordinateInput, ',');
 		x = stoi(coordinateInput);
-		getline(stream, coordinateInput, ','));
-		x = stoi(coordinateInput);
-			
-		
-	const Point* min = s.getMinimum(yCoordinateComparator);
-	cout <<	"Minimum is : " << min -> toString() << endl;
-	PointSet::PivotComparator comparator(min, polarAngleComparator);
-	s.sortSet(comparator);
-	cout << "Set after first sort:"<<endl<<endl;
-	for(int i=0;i<s.size();i++)
-	{
-		cout << "Point "<< i<<": " << s[i] -> toString() << endl; 
+		getline(stream, coordinateInput);
+		y = stoi(coordinateInput);
+		newPoint = new Point(x,y);
+		set.add(*newPoint);		
+		delete(newPoint);
+		stream.clear();
 	}
-	cout << "Hull size is "<< grahmScanSort(s)<<endl<<endl;
-	for(int i=0;i<s.size();i++)
-	{
-		cout << "Point "<< i<<": " << s[i] -> toString() << endl; 
-	}
+	
+	/* Sorting set according to polar comparison to the pivot - the point with
+	 * the lowest y (ties broken by x) */
+	const Point* min = set.getMinimum(yCoordinateComparator);
+	PointSet::PivotComparator polarComparator(*min, polarAngleComparator);
+	set.sortSet(polarComparator);
+	
+	/*Running the grahm scan algorithm. The Points consisting the convex hull
+	 * will be swapped to the start of the set */
+	int hullSize = grahmScanSort(set);
 
+	/* Trimming the set so only the points in the hull remain, sorting
+	 * according to the x coordinate and printing. */
+	set.trim(set.size()- hullSize);
+	set.sortSet(xCoordinateComparator);
+	cout << "result"<<endl;
+	cout <<set.toString();
 }
