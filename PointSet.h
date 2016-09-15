@@ -28,8 +28,8 @@ public:
 		 * function that performs a comparison between two points, given the known
 		 * pivot point.
 		 */
-		PivotComparator(const Point *& pivot, bool (*comparatorFunction)(const
-					Point*& p1, const Point*& p2, const Point* pivot));
+		PivotComparator(const Point& pivot, bool (*const comparatorFunction)(const
+					Point*& p1, const Point*& p2, const Point& pivot));
 
 		/**
 		 * Overloads the () operator in order to provide the functor capability.
@@ -39,8 +39,8 @@ public:
 		bool operator()(const Point*& p1, const Point*& p2) const;
 
 	private:
-		const Point* _pivot;
-		bool (*_comparatorFunction)(const Point*& p1, const Point*& p2, const Point* pivot);
+		const Point& _pivot;
+		bool (* const _comparatorFunction)(const Point*& p1, const Point*& p2, const Point& pivot);
 	};
 
 	/**
@@ -71,9 +71,11 @@ public:
 	 */
 	bool remove(const Point& point);
 
-	/**
-	 * Returns the number of points currently in the set
-	 */
+	/** Removes the last n points from the set. Requires n to be smaller or
+	 * equal to the size of the set */
+	void trim(const int n);
+	
+	/** Returns the number of points currently in the set*/
 	int size() const;
 
 	/**
@@ -82,15 +84,20 @@ public:
 	void sortSet(const PivotComparator& comparator);
 
 	/**
-	 * Returns the minimal point in the set according to the given comparator
-	 * function.
+	 * Sorts the set according to a given boolean function
 	 */
-	const Point* getMinimum (bool (*comparatorFunction)(const Point*& p1, const Point*& p2)) const;
+	void sortSet(bool (*const comparator)(const Point*& p1, const Point*& p2));
+
+	/**
+	 * Returns the minimal point in the set according to the given comparator
+	 * function. Returns a nullptr if set is empty.
+	 */
+	const Point* getMinimum (bool (*const comparatorFunction)(const Point*& p1, const Point*& p2)) const;
 	
 	/** Returns the pointer in the given index. */
 	const Point* operator[] (const int index); 
 
-	/** Swaps between the location of two points in the set, accrding to the
+	/** Swaps between the location of two points in the set, according to the
 	 * given indexes */
 	void swapSet(const int i, const int j);
 

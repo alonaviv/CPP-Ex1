@@ -1,0 +1,5 @@
+- explain about the choice to copy the points into the set, the set destructs
+  them. So no need to save them outside.
+
+  - add in a comment before the algorithm itself details about how it works and
+	its complexity. Also wiki link.

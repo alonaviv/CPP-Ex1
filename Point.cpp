@@ -7,10 +7,12 @@
 using namespace std;
 
 // -------------------------------------------------------------------------------
-// This file contains the implementaion of the class Point.
+// This file contains the implementation of the class Point.
 // -------------------------------------------------------------------------------
 
-Point::Point(int x, int y): _x(x), _y(y){}
+Point::Point(const int x, const int y): _x(x), _y(y){}
+
+Point::Point(const Point& point): _x(point.getX()), _y(point.getY()){}
 
 int Point::getX() const
 {
@@ -23,7 +25,7 @@ int Point::getY() const
 }
 
 
-void Point::set(int x, int y)
+void Point::set(const int x, const int y)
 {
 	_x = x;
 	_y = y;

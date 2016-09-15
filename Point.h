@@ -17,12 +17,17 @@ public:
 	/**
 	 * Constructor with given coordinates
 	 */
-	Point(int x, int y);
+	Point(const int x, const int y);
+
+	/**
+	 * Copy constructor
+	 */
+	Point(const Point& point);
 
 	/** 
-	 * Sets the coorditantes to given values
+	 * Sets the coordinates to given values
 	 */
-	void set(int x, int y);
+	void set(const int x, const int y);
 
 	/**
 	 * Getter for the x coordinate.
