@@ -46,6 +46,12 @@ public:
 	 */
 	string toString() const;
 
+	/** 
+	 * Two points are equal if they have the same coordinates
+	 */
+	bool operator==(const Point &other) const;
+
+
 private:
 
 	int _x;

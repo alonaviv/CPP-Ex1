@@ -38,3 +38,8 @@ string Point::toString() const
 	output << _x << "," << _y;
 	return output.str();
 }
+
+bool Point::operator==(const Point &other) const
+{
+	return _x == other.getX() and _y == other.getY();
+}

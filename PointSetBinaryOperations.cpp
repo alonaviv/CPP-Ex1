@@ -4,7 +4,7 @@
 
 #include <iostream> 
 #include "Point.h"
-#include "Point.cpp"
+#include "PointSet.h"
 using namespace std;
 
 int main()
@@ -29,7 +29,6 @@ int main()
 	set1.add(p6);
 	set1.add(p7);
 	set1.add(p8);
-	set1.add(p9);
 	
 	
 	PointSet set2;
@@ -41,9 +40,23 @@ int main()
 	set2.add(p6);
 	set2.add(p7);
 	set2.add(p8);
-	set2.add(p9);
 	
-	cout << "Are both sets equal ?" << (set1 == set2) ? "yes":"no" << endl;
+	PointSet set3;
+	set3.add(p1);
+	set3.add(p2);
+	set3.add(p3);
+	set3.add(p4);
+	set3.add(p5);
+	set3.add(p6);
+	set3.add(p7);
+	set3.add(p9);
+	
+	cout << "Are sets 1 and 2 equal? " << (set1 == set2) << endl;
+	cout << "Are sets 1 and 3 equal? " << (set1 == set3) << endl;
+	cout << "Are sets 1 and 3 not equal? " << (set1 != set3) << endl;
+	set3.remove(p9);
+	set3.add(p8);
+	cout << "Are sets 1 and 3 equal now? " << (set1 == set3) << endl;
 }
 
 

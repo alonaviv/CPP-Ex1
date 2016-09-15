@@ -43,7 +43,7 @@ PointSet::~PointSet()
 	free(_array);
 }
 
-int PointSet::_getIndex(const Point& point) const
+int PointSet::getIndex(const Point& point) const
 {
 	for(int i=0; i<_setSize; i++)
 	{
@@ -63,7 +63,7 @@ int PointSet::_getIndex(const Point& point) const
  */
 bool PointSet::add(const Point& point)
 {
-	if(_getIndex(point) != POINT_NOT_FOUND)
+	if(getIndex(point) != POINT_NOT_FOUND)
 	{
 		return false;
 	}
@@ -96,7 +96,7 @@ string PointSet::toString() const
  * cell back. The cell that had the last point receives a nullptr instead */
 bool PointSet::remove(const Point& point)
 {
-	int pointIndex = _getIndex(point);
+	int pointIndex = getIndex(point);
 	if(pointIndex == POINT_NOT_FOUND)
 	{
 		return false;
@@ -173,7 +173,38 @@ void PointSet::swapSet(const int i, const int j)
 	swap(_array[i], _array[j]);
 }
 
+
 bool PointSet::_validIndex(int index) const
 {
 	return 0 <= index and index < _setSize;
+}
+
+
+bool PointSet::_isSameSet(const PointSet& other) const
+{
+	if(_setSize != other.size())
+	{
+		return false;
+	}
+
+	for(int i=0; i<_setSize; i++)
+	{
+		if(other.getIndex(*_array[i]) == POINT_NOT_FOUND)
+		{
+			return false;
+		}
+	}
+	
+	return true;
+}
+
+
+bool PointSet::operator==(const PointSet& other) const
+{
+	return _isSameSet(other);
+}
+
+bool PointSet::operator!=(const PointSet& other) const
+{
+	return !_isSameSet(other);
 }

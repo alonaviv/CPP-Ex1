@@ -13,16 +13,11 @@
 
 static const int MINIMAL_POINTS_IN_HULL = 3;
 
-/* Custom modulu operation. Adds the sum of the modulu to the result in case of
- * a negative modulu result. This allows "looping around" for indexes, also in
- * the negative direction */
 int modulu(const int a, const int b)
 {
 	int result = a%b;
 	return (result < 0) ? result+b: result;
 }
-
-
 /* y-coordinate Point comparator. Points are compared by the y coordinate,
  * with ties broken by the x coordinate
  */
@@ -85,6 +80,7 @@ bool polarAngleComparator(const Point*& p1, const Point*& p2, const Point& pivot
 	return slope1 > slope2;
 }
 
+
 /** 
  * Checks what turn is formed with the line between the three given points.
  * Returns a positive number for a left turn, a negative for a right turn, and
@@ -95,8 +91,6 @@ int getTurnDirection(const Point* p1, const Point* p2, const Point* p3)
 	return (p2 -> getX() - p1 -> getX())*(p3 -> getY() - p1 -> getY()) - (p2 ->
 			getY() - p1 -> getY())*(p3 -> getX() - p1 -> getX()); 
 }
-
-
 /** Receives a PointSet object with a pivot point located at the start of the
  * set. The pivot point is defined as the lowest and most left point in the
  * set. The function uses the Grahm Scan algorithm in order to locate the
@@ -112,31 +106,51 @@ int grahmScanSort(PointSet& set)
 		return set.size();
 	}
 	
-	
+	cout << "entered grahm scan"<<endl;
 	int i = 1;
 	int hullSize = 0; // For index convenience, the hull size is counted from
 	                  // 0. The actual size will be returned incremented by 1.
 	
 	// Taking care of the point in index 1. Using the last point in the set as
 	// the predecessor to the first (pivot) point.
+	//TODO deal with same line
+	cout << "Before first point. Comparing " << set[set.size()-1] -> toString() << ", " << set[0] -> toString() << " and " << set[i] -> toString() <<". Result is "<< getTurnDirection(set[set.size() - 1], set[hullSize], set[i]) << endl;
 	while(getTurnDirection(set[set.size() - 1], set[hullSize], set[i]) <= 0 and i < set.size() - 1)
 	{
+	cout << "In loop. Comparing " << set[set.size()-1] -> toString() << ", " << set[hullSize] -> toString() << " and " << set[i] -> toString() <<". Result is "<< getTurnDirection(set[set.size() - 1], set[0], set[1]) << endl;
 		i++;
+		cout << "done with loop iteration. Increased i to " << i << endl;
 	}
+cout << "Done with loop. i is " << i <<". Hull size is " << hullSize << endl;
 	hullSize++;
 	set.swapSet(hullSize, i);
+	cout << "incremented hull size to " << hullSize<<" and swapped hull and i. " << endl; 
+	cout << endl << "Starting main portion: "<<endl<<endl;
 
 	//Iterating over the rest of the points.
 	for(i++ ; i < set.size(); i++)
 	{
+		cout <<endl<< "Starting loop iteration. i is " <<i<<". Hull size is "<< hullSize<<". Set size(static) is "<<set.size()<<endl;
+	cout << "Before Inner loop. Comparing " << set[(hullSize-1)%set.size()] -> toString() << ", " << set[hullSize] -> toString() << " and " << set[i] -> toString() <<". Result is "<< getTurnDirection(set[hullSize-1], set[hullSize], set[i])<<endl; 
 		while(getTurnDirection(set[modulu(hullSize-1,set.size())], set[hullSize], set[i]) <= 0)
 		{
+	cout << "Inner loop. Comparing " << set[(hullSize-1)%set.size()] -> toString() << ", " << set[hullSize] -> toString() << " and " << set[i] -> toString() <<". Result is "<< getTurnDirection(set[hullSize-1], set[hullSize], set[i])<<endl; 
+			if(i == set.size() -1) //on last point, no need to decrement.
+			{
+				cout << "got to last point. Breaking out of loop"<<endl;
+			}
 			hullSize--;
+			cout << "decreased hull size. It is now "<<hullSize<<endl;
+		cout << "HERE! " << (hullSize-1)%set.size()<<endl;
 		}
 		hullSize++;
+			cout << "increased hull size. It is now "<<hullSize<<endl;
+		cout << "swapping between index hull size, which is "<< hullSize<< " and index i, which is "<<i<<endl;
 		set.swapSet(hullSize, i);
 	}
-	return ++hullSize; 
+	
+	cout << "done with it all. Returning " <<hullSize+1 << endl<<endl<<endl;
+	return ++hullSize;	
 }
 
 
@@ -166,8 +180,11 @@ int main()
 	/* Sorting set according to polar comparison to the pivot - the point with
 	 * the lowest y (ties broken by x) */
 	const Point* min = set.getMinimum(yCoordinateComparator);
+
+	cout << "pivot is " << min -> toString() << endl;
 	PointSet::PivotComparator polarComparator(*min, polarAngleComparator);
 	set.sortSet(polarComparator);
+	cout << "Sorted set: "<<endl<<set.toString()<<endl;
 	
 	/*Running the grahm scan algorithm. The Points consisting the convex hull
 	 * will be swapped to the start of the set */

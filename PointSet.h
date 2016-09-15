@@ -38,6 +38,8 @@ public:
 		 */
 		bool operator()(const Point*& p1, const Point*& p2) const;
 
+
+
 	private:
 		const Point& _pivot;
 		bool (* const _comparatorFunction)(const Point*& p1, const Point*& p2, const Point& pivot);
@@ -96,10 +98,30 @@ public:
 	
 	/** Returns the pointer in the given index. */
 	const Point* operator[] (const int index); 
+	
+
+	/**
+	 * Standard == overloader. Returns true iff both sets contain exactly
+	 * the same points (disregarding the order within the sets)
+	 */
+	bool operator==(const PointSet& other) const;
+
+
+	/**
+	 * Standard != overloader. Returns true iff both sets don't contain exactly
+	 * the same points (disregarding the order within the sets)
+	 */
+	bool operator!=(const PointSet& other) const;
+
+	/** Returns the index of given point within the array. Returns -1 if no
+	 * Point is found. */
+	int getIndex(const Point& point) const;	
+
 
 	/** Swaps between the location of two points in the set, according to the
 	 * given indexes */
 	void swapSet(const int i, const int j);
+
 
 private:
 	int _setSize;
@@ -107,11 +129,12 @@ private:
 	const Point * * _array;
 	int _iteratorIndex;
 	
-	/** Returns the index of given point within the array. Returns -1 if no
-	 * Point is found. */
-	int _getIndex(const Point& point) const;	
 
 	/** Checks if the given index exists in the array */
 	bool _validIndex(int index) const;
+
+	/** Checks if the given set has the exact same points as self, disregarding
+	 * order */
+	bool _isSameSet(const PointSet& other) const;
 };
 #endif
