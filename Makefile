@@ -8,6 +8,9 @@ ConvexHull: $(FILES)
 PointSetBinaryOperations: Point.o PointSet.o PointSetBinaryOperations.o
 	$(CC) $(FLAGS) PointSetBinaryOperations.o Point.o PointSet.o -o PointSetBinaryOperations 	
 
+GDBPointSetBinaryOperations: Point.o PointSet.o PointSetBinaryOperations.o
+	$(CC) $(FLAGS) -g PointSetBinaryOperations.o Point.o PointSet.o -o GDBPointSetBinaryOperations 	
+
 ConvexHull.o: ConvexHull.cpp
 	$(CC) $(FLAGS) -c ConvexHull.cpp
 

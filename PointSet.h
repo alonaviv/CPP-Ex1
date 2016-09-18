@@ -16,6 +16,10 @@ class PointSet
 {
 public:
 
+	/** Swaps between the data of the given sets. */
+	friend void swapSets(PointSet& a, PointSet& b);
+
+
 	/** Functor object for comparing two points according to a known pivot
 	 * point. To be used in the sort method. 
 	 */
@@ -46,9 +50,21 @@ public:
 	};
 
 	/**
-	 * Constructor
+	 * Default Constructor
 	 */
 	PointSet();
+
+	/**
+	 * Constructor with passed values. The size of the set and the array are
+	 * defined.
+	 */
+	PointSet(const int setSize, const int arraySize);
+
+	/**
+	 * Copy Constructor, creates an object with the same points and order as
+	 * the given object
+	 */
+	PointSet(const PointSet& other);
 
 	/**
 	 * Destructor
@@ -113,6 +129,28 @@ public:
 	 */
 	bool operator!=(const PointSet& other) const;
 
+
+	/** 
+	 * Returns a new PointSet object containing all the points in self,
+	 * excluding the points in the given set.
+	 */
+	PointSet operator-(const PointSet& other) const; 
+	
+
+	/** 
+	 * Returns a new PointSet object containing all the points that are both in self,
+	 * and in the given set.
+	 */
+	PointSet operator&(const PointSet& other) const; 
+
+
+	/**
+	 * Destroys current set and reloads it with the points in the given set,
+	 * with the same order
+	 */
+	PointSet& operator=(PointSet other);
+
+	
 	/** Returns the index of given point within the array. Returns -1 if no
 	 * Point is found. */
 	int getIndex(const Point& point) const;	
@@ -120,15 +158,13 @@ public:
 
 	/** Swaps between the location of two points in the set, according to the
 	 * given indexes */
-	void swapSet(const int i, const int j);
+	void swapPoints(const int i, const int j); 
 
 
 private:
 	int _setSize;
 	int _arraySize;
 	const Point * * _array;
-	int _iteratorIndex;
-	
 
 	/** Checks if the given index exists in the array */
 	bool _validIndex(int index) const;
