@@ -32,8 +32,9 @@ public:
 		 * function that performs a comparison between two points, given the known
 		 * pivot point.
 		 */
-		PivotComparator(const Point& pivot, bool (*const comparatorFunction)(const
-					Point*& p1, const Point*& p2, const Point& pivot));
+		PivotComparator(const Point& pivot,
+                        bool (*const comparatorFunction)(const Point*& p1, 
+                        const Point*& p2, const Point& pivot));
 
 		/**
 		 * Overloads the () operator in order to provide the functor capability.
@@ -46,7 +47,8 @@ public:
 
 	private:
 		const Point& _pivot;
-		bool (* const _comparatorFunction)(const Point*& p1, const Point*& p2, const Point& pivot);
+		bool (* const _comparatorFunction)(const Point*& p1, const Point*& p2,
+                                                   const Point& pivot);
 	};
 
 	/**

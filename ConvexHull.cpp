@@ -13,17 +13,17 @@
 
 static const int MINIMAL_POINTS_IN_HULL = 3;
 
-/* Custom modulu operation. Adds the sum of the modulu to the result in case of
+/** Custom modulu operation. Adds the sum of the modulu to the result in case of
  * a negative modulu result. This allows "looping around" for indexes, also in
  * the negative direction */
 int modulu(const int a, const int b)
 {
-	int result = a%b;
-	return (result < 0) ? result+b: result;
+	int result = a % b;
+	return (result < 0) ? result + b: result;
 }
 
 
-/* y-coordinate Point comparator. Points are compared by the y coordinate,
+/** y-coordinate Point comparator. Points are compared by the y coordinate,
  * with ties broken by the x coordinate
  */
 bool yCoordinateComparator(const Point*& p1, const Point*& p2)
@@ -35,7 +35,8 @@ bool yCoordinateComparator(const Point*& p1, const Point*& p2)
 	return p1 -> getY() < p2 -> getY();
 }
 
-/* x-coordinate Point comparator. Points are compared by the x coordinate,
+
+/** x-coordinate Point comparator. Points are compared by the x coordinate,
  * with ties broken by the y coordinate
  */
 bool xCoordinateComparator(const Point*& p1, const Point*& p2)
@@ -48,7 +49,7 @@ bool xCoordinateComparator(const Point*& p1, const Point*& p2)
 }
 
 
-/*
+/**
  * Compares two points according to their polar angle in comparison to a pivot.
  * This is done by calculating the slope of the vector connecting each point to
  * the pivot, and using the slope in order to compare the two. If the slope is
@@ -80,8 +81,8 @@ bool polarAngleComparator(const Point*& p1, const Point*& p2, const Point& pivot
 		return !(p2 -> getX() > pivot.getX());
 	}
 
-	double slope1 = (p1 -> getX() - pivot.getX()) /(double) (p1 -> getY() - pivot.getY());
-	double slope2 = (p2 -> getX() - pivot.getX()) /(double) (p2 -> getY() - pivot.getY());
+	double slope1 = (p1 -> getX() - pivot.getX()) / (double) (p1 -> getY() - pivot.getY());
+	double slope2 = (p2 -> getX() - pivot.getX()) / (double) (p2 -> getY() - pivot.getY());
 	return slope1 > slope2;
 }
 
@@ -103,6 +104,10 @@ int getTurnDirection(const Point* p1, const Point* p2, const Point* p3)
  * points in the set which constitute the convex hull. These points are swapped
  * within the given set so they comprise the first M places, with M being the
  * number of points in the convex hull. This M is returned by the function.
+ * The grahm scan algorithm was taken from the wikipedia article:
+ * https://en.wikipedia.org/wiki/Graham_scan. The algorithm's complexity is 
+ * dominated by the sort - so the complexity is O(n log n). The actual scan, 
+ * after the sort is performed, is of complexity O(n).
  */
 int grahmScanSort(PointSet& set)
 {
@@ -124,22 +129,24 @@ int grahmScanSort(PointSet& set)
 		i++;
 	}
 	hullSize++;
-	set.swapSet(hullSize, i);
+	set.swapPoints(hullSize, i);
 
 	//Iterating over the rest of the points.
 	for(i++ ; i < set.size(); i++)
 	{
-		while(getTurnDirection(set[modulu(hullSize-1,set.size())], set[hullSize], set[i]) <= 0)
+		while(getTurnDirection(set[modulu(hullSize-1, set.size())], set[hullSize], set[i]) <= 0)
 		{
 			hullSize--;
 		}
 		hullSize++;
-		set.swapSet(hullSize, i);
+		set.swapPoints(hullSize, i);
 	}
 	return ++hullSize; 
 }
 
-
+/**
+* Main function - receives points from user and returns the convex hull 
+*/
 int main()
 {
 	/* Receiving input, creating corresponding Points, and adding them to the
@@ -157,7 +164,7 @@ int main()
 		x = stoi(coordinateInput);
 		getline(stream, coordinateInput);
 		y = stoi(coordinateInput);
-		newPoint = new Point(x,y);
+		newPoint = new Point(x, y);
 		set.add(*newPoint);		
 		delete(newPoint);
 		stream.clear();
@@ -177,6 +184,6 @@ int main()
 	 * according to the x coordinate and printing. */
 	set.trim(set.size()- hullSize);
 	set.sortSet(xCoordinateComparator);
-	cout << "result"<<endl;
-	cout <<set.toString();
+	cout << "result" << endl;
+	cout << set.toString();
 }

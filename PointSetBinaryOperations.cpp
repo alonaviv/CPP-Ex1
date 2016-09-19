@@ -11,16 +11,16 @@ using namespace std;
 int main()
 {
 	// Setting up points and adding them to sets.
-	Point p1(1,13);
-	Point p2(3,14);
-	Point p3(4,13);
-	Point p4(3,8);
-	Point p5(4,8);
-	Point p6(5,8);
-	Point p7(6,8);
-	Point p8(7,8);
-	Point p9(8,8);
-	Point p10(10,10);	
+	Point p1(1, 13);
+	Point p2(3, 14);
+	Point p3(4, 13);
+	Point p4(3, 8);
+	Point p5(4, 8);
+	Point p6(5, 8);
+	Point p7(6, 8);
+	Point p8(7, 8);
+	Point p9(8, 8);
+	Point p10(10, 10);	
 
 	PointSet set1; 
 	set1.add(p1);
@@ -103,12 +103,12 @@ int main()
 
 	set3 = set1;
 	cout << "After assigning set1 to set3, this is the contents of set3:" << set3.toString() << endl;
-	cout << "Did set1 stay the same? "<< set1.toString() << endl;
+	cout << "Did set1 stay the same? " << set1.toString() << endl;
 
 	set2 = set2;
 	cout << "After assigning set2 to set2, this is the contents of set2:" << set2.toString() << endl;
 
 	set1 = set3;
 	cout << "After assigning set3 to set1, this is the contents of set1:" << set1.toString() << endl;
-	cout << "Did set3 stay the same? "<< set3.toString() << endl;
+	cout << "Did set3 stay the same? " << set3.toString() << endl;
 }

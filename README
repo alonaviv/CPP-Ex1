@@ -1,5 +1,27 @@
-- explain about the choice to copy the points into the set, the set destructs
-  them. So no need to save them outside.
+//README
 
-  - add in a comment before the algorithm itself details about how it works and
-	its complexity. Also wiki link.
+//Author: Alon Aviv
+
+
+This program receives a list of points from the user, and outputs the list of points that
+constitute a convex hull.
+
+The program is implemented, as required, with a Point object and a PointSet object, that holds 
+points. The set uses a vector type array - a dynamic array that doubles in size every time
+it maxes out. Thus most of the time the actual set takes up only a part of the allocated
+array memory. The array holds pointers to Point objects. The objects are allocated upon adding
+a point to the set, meaning the point holds its own copy of the points. This allows the
+set to prolong the life span of the point object that is added to it.
+
+In order to make the code extendable and reusable the entierty of the grahm scan algorithm,
+used to determin the convex hull, is situated in the main program, and not in the 
+aformentioned objects. The set objects allows sorting accorrding to a given boolean
+function, or a given polar object. This object holds a static pivot, and allows a boolean
+comparator function to use this pivot as data to detrmine the comparison. This 
+functionality supports the polar sorting of the set as required by the algorithm, but
+can be extended easily to any other sorting mechanism requiring a pivot point.
+
+The set is overloaded with the requests operator, with pretty straightforward implementations.
+It should be noted that the assignment operator is implemented with the swap paradigm, thus
+utilizing both the copy constructor and the destructor in the assignment operations, without
+duplicating code.
